@@ -198,7 +198,8 @@ const showMap = async () => {
      }) 
   } else {
     config = await process(YAML.parse(yml))
-    tell(config)
+    console.log(config)
+    tell()
   }
 }
 
