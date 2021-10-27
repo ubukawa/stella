@@ -1,7 +1,6 @@
 import {
   YAML
-//} from "./YAML.js"
-} from "https://code4sabae.github.io/js/YAML.js"
+} from "./YAML.js"
 
 const style = href => {
   const e = document.createElement('link')
