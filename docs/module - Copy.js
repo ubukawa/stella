@@ -3,10 +3,6 @@ import {
 //} from "./YAML.js"
 } from "https://code4sabae.github.io/js/YAML.js"
 
-import {
-  showMap
-} from "./storytelling.js"
-
 const style = href => {
   const e = document.createElement('link')
   e.href = href
@@ -181,29 +177,44 @@ console.log(map.flyTo(chapterView(chapter)))
 
 //test 2021-10-27
 const getYAML = () => {
-  const sc = document.querySelectorAll("script")
+  const sc = document.querySelectorAll("script");
   for (const s of sc) {
     if (s.type == "text/yaml") {
-      return s.textContent
+      return s.textContent;
     }
   }
-  return null
-}
+  return null;
+};
 
-const main = async () => {
+const showMap = async () => {
+  mapgl = maplibregl
   const yml = getYAML()
   if (!yml) {
-    alert("error: not found YAML")
+     let url = document.location.search.substring(1)
+     url = url ? url : './story.yml'
+     YAML.load(url, c => {
+       config = c
+       console.log(config)
+       tell()
+     }) 
   } else {
-    const config = await process(YAML.parse(yml))
-    if (typeof mapboxgl !== 'undefined' && typeof scrollama !== 'undefined') {
-      showMap(config)
-    } else {
-      window.onload = () => {
-        showMap(config)
-      }
-    }
+    const config = await process(YAML.parse(yml));
+    console.log(config)
+    tell()
   }
 }
-main()
 
+/*
+const showMap = async () => {
+  mapgl = maplibregl
+  let url = document.location.search.substring(1)
+  url = url ? url : './story.yml'
+  YAML.load(url, c => {
+    config = c
+    console.log(config)
+    tell()
+  })
+}
+*/
+
+window.onload = showMap
