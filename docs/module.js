@@ -1,6 +1,7 @@
 import {
   YAML
-} from "./YAML.js"
+//} from "./YAML.js"
+} from "https://code4sabae.github.io/js/YAML.js"
 
 const style = href => {
   const e = document.createElement('link')
@@ -197,7 +198,8 @@ const showMap = async () => {
        tell()
      }) 
   } else {
-    config = await process(YAML.parse(yml))
+//    let config = await process(YAML.parse(yml))
+    let config = yml
     console.log(config)
     tell()
   }
