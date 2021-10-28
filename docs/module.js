@@ -1,7 +1,7 @@
 import {
   YAML
-//} from "./YAML.js"
-} from "https://code4sabae.github.io/js/YAML.js"
+} from "./YAML.js"
+//} from "https://code4sabae.github.io/js/YAML.js"
 
 const style = href => {
   const e = document.createElement('link')
@@ -61,7 +61,6 @@ const zoom = (config, i) => {
   return config.view[config.chapters[i].location].zoom
 }
 
-
 const tell = () => {
   map = new mapgl.Map({
     container: 'map',
@@ -98,7 +97,6 @@ const tell = () => {
     header.setAttribute('id', 'header')
     story.appendChild(header)
   }
-
 
   config.chapters.forEach((record, idx) => {
     let container = document.createElement('div')
@@ -175,36 +173,6 @@ console.log(map.flyTo(chapterView(chapter)))
   window.addEventListener('resize', scroller.resize)
 }
 
-//test 2021-10-27
-const getYAML = () => {
-  const sc = document.querySelectorAll("script");
-  for (const s of sc) {
-    if (s.type == "text/yaml") {
-      return s.textContent;
-    }
-  }
-  return null;
-};
-
-const showMap = async () => {
-  mapgl = maplibregl
-  const yml = getYAML()
-  if (!yml) {
-     let url = document.location.search.substring(1)
-     url = url ? url : './story.yml'
-     YAML.load(url, c => {
-       config = c
-       console.log(config)
-       tell()
-     }) 
-  } else {
-//    let config = await process(YAML.parse(yml))
-    let config = yml
-    console.log(config)
-    tell()
-  }
-}
-
 /*
 const showMap = async () => {
   mapgl = maplibregl
@@ -217,5 +185,66 @@ const showMap = async () => {
   })
 }
 */
+
+//2021-10-28 (from here)
+
+const process = async (config) => {
+  return new Promise(async (resolve) => {
+    config.theme = 'light'
+    config.showMarkers = false
+    const urlParams = new URLSearchParams(window.location.search)
+    if (config.allowExternalStory && urlParams.has('story')) {
+      config.chapters = window.location.search.split('story=')[1]
+      // specify map title
+      if (urlParams.has('title')) {
+        config.title = urlParams.get('title')
+      }
+      // specify default zoom level
+      if (urlParams.has('zoom')) {
+        config.defaultZoom = parseInt(urlParams.get('zoom'))
+      }
+    }
+    config.chapters = createChapters(config.chapters, config.defaultZoom || 10)
+    resolve(config)
+  })
+}
+
+
+const getYAML = () => {
+  const sc = document.querySelectorAll("script");
+  for (const s of sc) {
+    if (s.type == "text/yaml") {
+      return s.textContent;
+    }
+  }
+  return null;
+};
+
+
+const showMap = async () => {
+  mapgl = maplibregl
+
+  const yml = getYAML()
+  if (!yml) {
+    let url = document.location.search.substring(1)
+    url = url ? url : './story.yml'
+    YAML.load(url, c => {
+      config = c
+      console.log(config)
+      tell()
+//    alert(config)
+    })
+  } else {
+    //alert("found YAML")
+    //alert(yml)
+    config =  YAML.parse(yml)
+    //alert(config)
+    console.log(config)
+    tell()
+  }
+}
+
+//2021-10-28 (until here)
+
 
 window.onload = showMap
